@@ -98,7 +98,7 @@ const glslControlKeywords = [
   // Control keywords
   'break', 'continue', 'do', 'else', 'for', 'if', 'main', 'return', 'while',
 
-  'discard'
+  'discard', 'layout', 'location'
 ];
 
 const glslBuiltinFunctions = [
