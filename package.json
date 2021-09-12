@@ -3,7 +3,7 @@
   "version": "1.4.2",
   "author": "Felix Niemeyer <niemeyer.felix@gmail.com>",
   "description": "GLSL Loader, Preprocessor, and Minifier for Webpack",
-  "homepage": "https://github.com/felixniemeyer/webpack-glsl-minify",
+  "homepage": "https://github.com/andrewkarpich/webpack-glsl-minify",
   "license": "MIT",
   "private": false,
   "repository": {
