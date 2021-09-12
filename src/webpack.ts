@@ -38,8 +38,6 @@ export async function webpackLoader(content: string): Promise<void> {
   const callback = loader.async();
   const options = loader.getOptions() as GlslMinifyOptions;
 
-  console.log("options", JSON.stringify(options, undefined, '  '))
-
   try {
     const glsl = new GlslMinify(options, (filename, directory) => webpackReadFile(loader, filename, directory),
       nodeDirname);
