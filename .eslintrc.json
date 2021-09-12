@@ -1,7 +1,4 @@
 {
-  "extends": [
-    "eslint-config-leosingleton"
-  ],
   "env": {
     "node": true,
     "es6": true
