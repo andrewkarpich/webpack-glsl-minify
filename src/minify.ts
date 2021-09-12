@@ -414,26 +414,6 @@ export class GlslMinify {
    */
   protected async preprocessPass1(content: GlslFile): Promise<string> {
     let output = content.contents;
-    
-    // Remove carriage returns. Use newlines only.
-    if (!this.options.keepNewlines) {
-      output = output.replace('\r', '');
-    }
-
-    // Strip any #version directives
-    if (this.options.stripVersion) {
-      output = output.replace(/#version.+/, '');
-    }
-
-    if (!this.options.keepComments) {
-      // Remove C style comments
-      const cStyleRegex = /\/\*[\s\S]*?\*\//g;
-      output = output.replace(cStyleRegex, '');
-
-      // Remove C++ style comments
-      const cppStyleRegex = /\/\/[^\n]*/g;
-      output = output.replace(cppStyleRegex, '\n');
-    }
 
     // Process @include directive
     const includeRegex = /@include\s+(.*)/;
@@ -453,7 +433,27 @@ export class GlslMinify {
       const includeContent = await this.preprocessPass1(includeFile);
 
       // Replace the @include directive with the file contents
-      output = output.replace(includeRegex, includeContent);
+      output = output.replace(includeRegex, '\n' + includeContent);
+    }
+    
+    // Remove carriage returns. Use newlines only.
+    if (!this.options.keepNewlines) {
+      output = output.replace('\r', '');
+    }
+
+    // Strip any #version directives
+    if (this.options.stripVersion) {
+      output = output.replace(/#version.+/, '');
+    }
+
+    if (!this.options.keepComments) {
+      // Remove C style comments
+      const cStyleRegex = /\/\*[\s\S]*?\*\//g;
+      output = output.replace(cStyleRegex, '');
+
+      // Remove C++ style comments
+      const cppStyleRegex = /\/\/[^\n]*/g;
+      output = output.replace(cppStyleRegex, '\n');
     }
 
     return output;
