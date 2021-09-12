@@ -330,12 +330,6 @@ export interface GlslMinifyOptions {
 
   /** Additional variable names or keywords to explicitly disable name mangling */
   nomangle?: string[];
-  
-  /** keep newlines. Default = false */
-  keepNewlines?: boolean;
-
-  /** keep comments. Default = false */
-  keepComments?: boolean;
 }
 
 /**
@@ -394,7 +388,7 @@ export class GlslMinify {
     const pass3 = this.minifier(pass2);
 
     return {
-      sourceCode: pass3,
+      sourceCode: this.options.preserveAll ? pass2 : pass3,
       uniforms: this.tokens.getUniforms(),
       consts: this.constValues
     };
@@ -407,16 +401,9 @@ export class GlslMinify {
     let output = content.contents;
 
     // Remove carriage returns. Use newlines only.
-    if (!this.options.keepNewlines) {
+    if (!this.options.preserveAll) {
       output = output.replace('\r', '');
-    }
 
-    // Strip any #version directives
-    if (this.options.stripVersion) {
-      output = output.replace(/#version.+/, '');
-    }
-
-    if (!this.options.keepComments) {
       // Remove C style comments
       const cStyleRegex = /\/\*[\s\S]*?\*\//g;
       output = output.replace(cStyleRegex, '');
@@ -426,8 +413,13 @@ export class GlslMinify {
       output = output.replace(cppStyleRegex, '\n');
     }
 
+    // Strip any #version directives
+    if (this.options.stripVersion) {
+      output = output.replace(/#version.+/, '');
+    }
+
     // Process @include directive
-    const includeRegex = /@include\s+(.*)/;
+    const includeRegex = /(?:#pragma\s+)?@include\s+(.*)/;
     while (true) {
       // Find the next @include directive
       const match = includeRegex.exec(output);
@@ -481,7 +473,7 @@ export class GlslMinify {
     }
 
     // Process @nomangle directives
-    const nomangleRegex = /@nomangle\s+(.*)/;
+    const nomangleRegex = /(?:#pragma\s+)?@nomangle\s+(.*)/;
     while (true) {
       // Find the next @nomangle directive
       const match = nomangleRegex.exec(output);
@@ -498,7 +490,7 @@ export class GlslMinify {
     }
 
     // Process @define directives
-    const defineRegex = /@define\s+(\S+)\s+(.*)/;
+    const defineRegex = /(?:#pragma\s+)?@define\s+(\S+)\s+(.*)/;
     while (true) {
       // Find the next @define directive
       const match = defineRegex.exec(output);
@@ -540,7 +532,7 @@ export class GlslMinify {
     }
 
     // Process @const directives
-    const constRegex = /@const\s+(.*)/;
+    const constRegex = /(?:#pragma\s+)?@const\s+(.*)/;
     while (true) {
       // Find the next @const directive
       const match = constRegex.exec(output);
