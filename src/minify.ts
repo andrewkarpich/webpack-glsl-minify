@@ -427,7 +427,7 @@ export class GlslMinify {
   protected async processIncludes(content: GlslFile): Promise<string> {
     let output = content.contents;
     // Process @include directive
-    const includeRegex = /@include\s+(.*)/;
+    const includeRegex = /@(?:#pragma\s+)?include\s+(.*)/;
     while (true) {
       // Find the next @include directive
       const match = includeRegex.exec(output);
@@ -507,7 +507,7 @@ export class GlslMinify {
     }
 
     // Process @nomangle directives
-    const nomangleRegex = /@nomangle\s+(.*)/;
+    const nomangleRegex = /(?:#pragma\s+)?@nomangle\s+(.*)/;
     while (true) {
       // Find the next @nomangle directive
       const match = nomangleRegex.exec(output);
@@ -524,7 +524,7 @@ export class GlslMinify {
     }
 
     // Process @define directives
-    const defineRegex = /@define\s+(\S+)\s+(.*)/;
+    const defineRegex = /(?:#pragma\s+)?@define\s+(\S+)\s+(.*)/;
     while (true) {
       // Find the next @define directive
       const match = defineRegex.exec(output);
@@ -566,7 +566,7 @@ export class GlslMinify {
     }
 
     // Process @const directives
-    const constRegex = /@const\s+(.*)/;
+    const constRegex = /(?:#pragma\s+)?@const\s+(.*)/;
     while (true) {
       // Find the next @const directive
       const match = constRegex.exec(output);
